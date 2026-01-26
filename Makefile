@@ -1,43 +1,88 @@
-# Compiler
-CXX := g++
+# =========================
+# Compilers
+# =========================
+CXX_LINUX := g++
+CXX_WIN   := x86_64-w64-mingw32-g++
 
-# Compiler flags
-CXXFLAGS := -Wall -Wextra -std=c++20
+# =========================
+# Flags
+# =========================
+CXXFLAGS := -Wall -Wextra -std=c++20 -O2
 
-# SDL flags
-SDL_FLAGS := $(shell pkg-config --cflags --libs sdl2 SDL2_image SDL2_ttf)
+# =========================
+# SDL (Linux)
+# =========================
+SDL_LINUX := $(shell pkg-config --cflags --libs sdl2 SDL2_ttf)
 
+# =========================
+# SDL (Windows - MinGW)
+# =========================
+SDL_WIN_INC := -Iexternal/SDL2/include
+SDL_WIN_LIB := -Lexternal/SDL2/lib -lmingw32 -lSDL2main -lSDL2 -lSDL2_ttf
+
+
+SDL_WIN_DLLS := \
+	external/SDL2/bin/SDL2.dll \
+	external/SDL2/bin/SDL2_ttf.dll
+
+# =========================
 # Directories
+# =========================
 SRCDIR := src
 OBJDIR := build
 BINDIR := bin
 
-# Source & object files
+OBJ_LINUX := $(OBJDIR)/linux
+OBJ_WIN   := $(OBJDIR)/windows
+
+# =========================
+# Files
+# =========================
 SRCS := $(wildcard $(SRCDIR)/*.cpp)
-OBJS := $(SRCS:$(SRCDIR)/%.cpp=$(OBJDIR)/%.o)
 
-# Output executable
-TARGET := $(BINDIR)/Word_Flu
+OBJS_LINUX := $(SRCS:$(SRCDIR)/%.cpp=$(OBJ_LINUX)/%.o)
+OBJS_WIN   := $(SRCS:$(SRCDIR)/%.cpp=$(OBJ_WIN)/%.o)
 
-# Default target
-all: $(TARGET)
-	echo "Success!"
+TARGET_LNX := $(BINDIR)/Word_Flu
+TARGET_WIN := $(BINDIR)/Word_Flu.exe
 
-# Link step
-$(TARGET): $(OBJS)
-	mkdir -p $(BINDIR)
-	$(CXX) $(OBJS) $(SDL_FLAGS) -o $@
+# =========================
+# Default
+# =========================
+.PHONY: all linux windows clean
+all: linux windows
+	@echo "Success"
 
-# Compile step
-$(OBJDIR)/%.o: $(SRCDIR)/%.cpp
-	mkdir -p $(OBJDIR)
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+# =========================
+# Linux build
+# =========================
+linux: $(TARGET_LNX)
 
-# Run
-run: all
-	./$(TARGET)
+$(TARGET_LNX): $(OBJS_LINUX)
+	@mkdir -p $(BINDIR)
+	$(CXX_LINUX) $^ $(SDL_LINUX) -o $@
 
+$(OBJ_LINUX)/%.o: $(SRCDIR)/%.cpp
+	@mkdir -p $(OBJ_LINUX)
+	$(CXX_LINUX) $(CXXFLAGS) -c $< -o $@
+
+# =========================
+# Windows build
+# =========================
+windows: $(TARGET_WIN)
+
+$(TARGET_WIN): $(OBJS_WIN)
+	@mkdir -p $(BINDIR)
+	$(CXX_WIN) $^ $(SDL_WIN_LIB) -o $@
+	@cp $(SDL_WIN_DLLS) $(BINDIR)
+
+$(OBJ_WIN)/%.o: $(SRCDIR)/%.cpp
+	@mkdir -p $(OBJ_WIN)
+	$(CXX_WIN) $(CXXFLAGS) $(SDL_WIN_INC) -c $< -o $@
+
+# =========================
 # Clean
-.PHONY: clean
+# =========================
 clean:
 	rm -rf $(OBJDIR) $(BINDIR)
+

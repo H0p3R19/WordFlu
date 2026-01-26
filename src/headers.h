@@ -5,7 +5,6 @@
 #include <SDL2/SDL.h> //For ovbious purposes
 #include <SDL2/SDL_ttf.h> //For text
 #include <string> //Always comes in handy
-#include <SDL2/SDL_image.h> //for displaying anything else other than png's
 //#include <SDL2/SDL_mixer.h> //Maybe used later for music
 
 

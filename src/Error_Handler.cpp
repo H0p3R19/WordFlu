@@ -8,11 +8,6 @@ void Error_Handler::Error(const std::string& message , Type part , SDL_Window* w
     case Type::SDL:
         error_message += SDL_GetError();
         break;
-
-    case Type::IMG:
-        error_message += IMG_GetError();
-        break;
-
     case Type::TTF:
         error_message += TTF_GetError();
         break;
