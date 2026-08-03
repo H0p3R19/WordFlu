@@ -13,9 +13,5 @@
 - ##    ##   ######                ##     ##    ##  ########  ##    ### ########     ## -    
 -----------------------------------------------------------------------------------------                                           
 
-THIS IS A SCHOOL PROJECT MADE BY ME
-Word Flu is an SDL based application made for a school project , The main premise of the game is to find what word was used incorrectly ! there is currently 10 questions.
-
-Buuuut its not like i copyrighted this or something so if i decide to realease this on my GitHub one day , Go crazy folks!
-
-
+This is a small C++ quiz app i have made when i was a senior in high school for a school project.
+It is really not interesting or impressive. I dont even revember how much of it is AI. I revember using ChatGPT , but i didnt vibe code the whole thing.
